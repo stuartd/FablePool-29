@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "F80vlb5EnEw=",
+  "success": true,
+  "projectFilePath": "/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/ZeroAlloc.Core.csproj",
+  "expectedPackageFiles": [
+    "/Users/stuart/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RootNamespace>ZeroAlloc</RootNamespace>
+    <AssemblyName>ZeroAlloc.Core</AssemblyName>
+    <Description>Allocation-free building blocks for low-latency / HFT systems on .NET: lock-free ring buffers, object pools, arena allocators, fixed-point decimals, zero-alloc FIX codecs, pooled buffer writers and an allocation-free logging facade.</Description>
+    <Version>0.3.0</Version>
+  </PropertyGroup>
+
+</Project>

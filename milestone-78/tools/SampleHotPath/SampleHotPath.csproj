@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>FablePool.Tools.SampleHotPath</RootNamespace>
+    <AssemblyName>SampleHotPath</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!--
+      Disable tiered compilation so the JIT does not perform background
+      recompilation (which allocates) after the warmup marker. This mirrors the
+      recommended measurement configuration in docs/design/12-runtime-configuration.md.
+    -->
+    <TieredCompilation>false</TieredCompilation>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+  </PropertyGroup>
+
+</Project>

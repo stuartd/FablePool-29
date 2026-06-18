@@ -1,0 +1,51 @@
+name: allocation-gate
+
+# Continuous enforcement of the "no allocations after warmup" contract
+# (docs/design/08-no-allocation-contract.md). This pipeline builds the
+# AllocationGate tool and the sample hot-path workload, launches the workload
+# under the gate with a ZERO allocation-tick budget, and fails the build on
+# any post-warmup managed allocation. Wire the same job against your engine's
+# deterministic replay harness when retrofitting an existing codebase
+# (docs/design/10-migration-guide.md, step 7).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Build gate and sample workload
+        run: |
+          dotnet build tools/AllocationGate/AllocationGate.csproj -c Release
+          dotnet build tools/SampleHotPath/SampleHotPath.csproj -c Release
+
+      - name: Run allocation gate (zero-tick budget)
+        run: |
+          dotnet tools/AllocationGate/bin/Release/net8.0/AllocationGate.dll \
+            --marker-provider FablePool-Contract \
+            --marker-event WarmupComplete \
+            --warmup-seconds 60 \
+            --measure-seconds 20 \
+            --max-ticks 0 \
+            --json allocation-report.json \
+            --verbose \
+            -- dotnet tools/SampleHotPath/bin/Release/net8.0/SampleHotPath.dll --duration 90
+
+      - name: Upload allocation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allocation-report
+          path: allocation-report.json

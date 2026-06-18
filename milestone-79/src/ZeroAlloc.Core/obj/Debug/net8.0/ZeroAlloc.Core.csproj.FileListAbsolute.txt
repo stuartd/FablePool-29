@@ -1,0 +1,13 @@
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/bin/Debug/net8.0/ZeroAlloc.Core.deps.json
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/bin/Debug/net8.0/ZeroAlloc.Core.dll
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/bin/Debug/net8.0/ZeroAlloc.Core.pdb
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/bin/Debug/net8.0/ZeroAlloc.Core.xml
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ZeroAlloc.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ZeroAlloc.Core.AssemblyInfoInputs.cache
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ZeroAlloc.Core.AssemblyInfo.cs
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ZeroAlloc.Core.csproj.CoreCompileInputs.cache
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ZeroAlloc.Core.dll
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/refint/ZeroAlloc.Core.dll
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ZeroAlloc.Core.xml
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ZeroAlloc.Core.pdb
+/Users/stuart/temp/fablepool-project-29/milestone-79/src/ZeroAlloc.Core/obj/Debug/net8.0/ref/ZeroAlloc.Core.dll

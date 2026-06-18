@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "dgSpecHash": "jS6NojJu4LA=",
+  "success": true,
+  "projectFilePath": "/Users/stuart/temp/fablepool-project-29/milestone-78/tools/AllocationGate/AllocationGate.csproj",
+  "expectedPackageFiles": [
+    "/Users/stuart/.nuget/packages/microsoft.diagnostics.netcore.client/0.2.661903/microsoft.diagnostics.netcore.client.0.2.661903.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.diagnostics.tracing.traceevent/3.1.30/microsoft.diagnostics.tracing.traceevent.3.1.30.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.2/microsoft.extensions.dependencyinjection.abstractions.8.0.2.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.extensions.logging.abstractions/8.0.3/microsoft.extensions.logging.abstractions.8.0.3.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.netcore.platforms/5.0.0/microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.win32.registry/5.0.0/microsoft.win32.registry.5.0.0.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.collections.immutable/9.0.8/system.collections.immutable.9.0.8.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.io.pipelines/9.0.8/system.io.pipelines.9.0.8.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.reflection.metadata/9.0.8/system.reflection.metadata.9.0.8.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.reflection.typeextensions/4.7.0/system.reflection.typeextensions.4.7.0.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.runtime.compilerservices.unsafe/6.1.2/system.runtime.compilerservices.unsafe.6.1.2.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.security.accesscontrol/5.0.0/system.security.accesscontrol.5.0.0.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.security.principal.windows/5.0.0/system.security.principal.windows.5.0.0.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.text.encodings.web/9.0.8/system.text.encodings.web.9.0.8.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/system.text.json/9.0.8/system.text.json.9.0.8.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.netcore.app.ref/8.0.22/microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.22/microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512",
+    "/Users/stuart/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.22/microsoft.netcore.app.host.osx-arm64.8.0.22.nupkg.sha512"
+  ],
+  "logs": []
+}

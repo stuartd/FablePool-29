@@ -1,0 +1,190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ZeroAlloc.Core</name>
+    </assembly>
+    <members>
+        <member name="T:ZeroAlloc.Concurrency.MpscRingBuffer`1">
+            <summary>
+            A bounded, lock-free multi-producer / single-consumer (MPSC) ring buffer based on
+            Dmitry Vyukov's sequenced-cell bounded queue, restricted to a single consumer so the
+            dequeue path needs no CAS at all.
+            </summary>
+            <typeparam name="T">The element type. Slots holding reference types are cleared on dequeue.</typeparam>
+            <remarks>
+            <para>
+            <b>Threading contract:</b> any number of threads may call <see cref="M:ZeroAlloc.Concurrency.MpscRingBuffer`1.TryEnqueue(`0@)"/>
+            concurrently. Exactly one thread may call <see cref="M:ZeroAlloc.Concurrency.MpscRingBuffer`1.TryDequeue(`0@)"/> and
+            <see cref="M:ZeroAlloc.Concurrency.MpscRingBuffer`1.DequeueBatch(System.Span{`0})"/>. The enqueue path is lock-free (a failed CAS means another
+            producer made progress); the dequeue path is wait-free.
+            </para>
+            <para>
+            <b>Allocation behavior:</b> the only managed allocation is the cell array created in the
+            constructor. Enqueue/dequeue are allocation-free.
+            </para>
+            <para>
+            Each cell carries a sequence number used as a turn indicator: a cell whose sequence equals the
+            producer's claimed position is free to write; a cell whose sequence equals
+            <c>position + 1</c> is full and ready to read. After consumption the consumer advances the
+            cell's sequence by the full capacity so the cell becomes writable for the next lap.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:ZeroAlloc.Concurrency.MpscRingBuffer`1.Cell">
+            <summary>A storage cell pairing the payload with its lap-sequence number.</summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.MpscRingBuffer`1.Cell.Sequence">
+            <summary>Turn indicator; see the class remarks for the protocol.</summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.MpscRingBuffer`1.Cell.Item">
+            <summary>The stored payload (valid only when the sequence marks the cell as full).</summary>
+        </member>
+        <member name="T:ZeroAlloc.Concurrency.MpscRingBuffer`1.Cursors">
+            <summary>Producer/consumer cursors padded onto separate cache lines.</summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.MpscRingBuffer`1.Cursors.Tail">
+            <summary>Next position producers will claim (CAS-incremented).</summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.MpscRingBuffer`1.Cursors.Head">
+            <summary>Next position the consumer will read. Written only by the consumer.</summary>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.MpscRingBuffer`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new ring buffer with at least <paramref name="minCapacity"/> slots.
+            The actual capacity is rounded up to the next power of two.
+            </summary>
+            <param name="minCapacity">Minimum number of slots; must be between 2 and 2^30 inclusive.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="minCapacity"/> is less than 2 or greater than 2^30.
+            </exception>
+        </member>
+        <member name="P:ZeroAlloc.Concurrency.MpscRingBuffer`1.Capacity">
+            <summary>Gets the fixed capacity of the buffer (always a power of two).</summary>
+        </member>
+        <member name="P:ZeroAlloc.Concurrency.MpscRingBuffer`1.Count">
+            <summary>
+            Gets an approximate count of items currently in the buffer. Best-effort under concurrency.
+            </summary>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.MpscRingBuffer`1.TryEnqueue(`0@)">
+            <summary>
+            Attempts to enqueue an item. <b>Safe to call from any number of producer threads.</b>
+            </summary>
+            <param name="item">The item to enqueue.</param>
+            <returns>
+            <see langword="true"/> if the item was enqueued; <see langword="false"/> if the buffer was
+            full at the time of the attempt.
+            </returns>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.MpscRingBuffer`1.TryDequeue(`0@)">
+            <summary>
+            Attempts to dequeue an item. <b>Consumer thread only.</b> Wait-free.
+            </summary>
+            <param name="item">Receives the dequeued item, or <c>default</c> if no item is ready.</param>
+            <returns><see langword="true"/> if an item was dequeued; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.MpscRingBuffer`1.DequeueBatch(System.Span{`0})">
+            <summary>
+            Dequeues up to <paramref name="destination"/>.Length ready items. <b>Consumer thread only.</b>
+            </summary>
+            <param name="destination">The span receiving dequeued items.</param>
+            <returns>The number of items dequeued (0 if no items were ready).</returns>
+        </member>
+        <member name="T:ZeroAlloc.Concurrency.SpscRingBuffer`1">
+            <summary>
+            A bounded, lock-free, wait-free single-producer / single-consumer (SPSC) ring buffer.
+            </summary>
+            <typeparam name="T">The element type. Both value types and reference types are supported;
+            slots holding reference types are cleared on dequeue so the buffer never extends object lifetimes.</typeparam>
+            <remarks>
+            <para>
+            <b>Threading contract:</b> exactly one thread may call the producer methods
+            (<see cref="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.TryEnqueue(`0@)"/>) and exactly one thread may call the consumer methods
+            (<see cref="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.TryDequeue(`0@)"/>, <see cref="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.TryPeek(`0@)"/>, <see cref="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.DequeueBatch(System.Span{`0})"/>).
+            Producer and consumer may be (and usually are) different threads. Violating this contract
+            produces undefined results.
+            </para>
+            <para>
+            <b>Allocation behavior:</b> the only managed allocation is the backing array created in the
+            constructor. All enqueue/dequeue operations are allocation-free and never take locks; they use
+            a single volatile store for publication, plus cached views of the opposite index so that the
+            common case touches only cache lines owned by the calling thread.
+            </para>
+            <para>
+            Indices are monotonically increasing 64-bit sequence numbers; at one billion operations per
+            second a wraparound would take roughly 292 years, so overflow is not handled.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:ZeroAlloc.Concurrency.SpscRingBuffer`1.Indices">
+            <summary>
+            Producer- and consumer-owned indices, padded onto distinct cache lines to
+            eliminate false sharing between the two threads.
+            </summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.SpscRingBuffer`1.Indices.Tail">
+            <summary>Next sequence number the producer will write. Written only by the producer.</summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.SpscRingBuffer`1.Indices.CachedHead">
+            <summary>Producer's cached view of <see cref="F:ZeroAlloc.Concurrency.SpscRingBuffer`1.Indices.Head"/>. Written only by the producer.</summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.SpscRingBuffer`1.Indices.Head">
+            <summary>Next sequence number the consumer will read. Written only by the consumer.</summary>
+        </member>
+        <member name="F:ZeroAlloc.Concurrency.SpscRingBuffer`1.Indices.CachedTail">
+            <summary>Consumer's cached view of <see cref="F:ZeroAlloc.Concurrency.SpscRingBuffer`1.Indices.Tail"/>. Written only by the consumer.</summary>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new ring buffer with at least <paramref name="minCapacity"/> slots.
+            The actual capacity is rounded up to the next power of two.
+            </summary>
+            <param name="minCapacity">Minimum number of slots; must be between 1 and 2^30 inclusive.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="minCapacity"/> is less than 1 or greater than 2^30.
+            </exception>
+        </member>
+        <member name="P:ZeroAlloc.Concurrency.SpscRingBuffer`1.Capacity">
+            <summary>Gets the fixed capacity of the buffer (always a power of two).</summary>
+        </member>
+        <member name="P:ZeroAlloc.Concurrency.SpscRingBuffer`1.Count">
+            <summary>
+            Gets an approximate count of items currently in the buffer. The value is exact only when
+            observed from a quiescent state; under concurrent use it is a best-effort snapshot.
+            This property is allocation-free.
+            </summary>
+        </member>
+        <member name="P:ZeroAlloc.Concurrency.SpscRingBuffer`1.IsEmpty">
+            <summary>Gets a best-effort indication of whether the buffer is empty.</summary>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.TryEnqueue(`0@)">
+            <summary>
+            Attempts to enqueue an item. <b>Producer thread only.</b>
+            </summary>
+            <param name="item">The item to enqueue.</param>
+            <returns><see langword="true"/> if the item was enqueued; <see langword="false"/> if the buffer is full.</returns>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.TryDequeue(`0@)">
+            <summary>
+            Attempts to dequeue an item. <b>Consumer thread only.</b>
+            </summary>
+            <param name="item">Receives the dequeued item, or <c>default</c> if the buffer is empty.</param>
+            <returns><see langword="true"/> if an item was dequeued; <see langword="false"/> if the buffer is empty.</returns>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.TryPeek(`0@)">
+            <summary>
+            Attempts to read the next item without removing it. <b>Consumer thread only.</b>
+            </summary>
+            <param name="item">Receives the next item, or <c>default</c> if the buffer is empty.</param>
+            <returns><see langword="true"/> if an item is available; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:ZeroAlloc.Concurrency.SpscRingBuffer`1.DequeueBatch(System.Span{`0})">
+            <summary>
+            Dequeues up to <paramref name="destination"/>.Length items into the destination span in
+            a single pass, amortizing the publication cost. <b>Consumer thread only.</b>
+            </summary>
+            <param name="destination">The span receiving dequeued items.</param>
+            <returns>The number of items actually dequeued (0 if the buffer is empty).</returns>
+        </member>
+    </members>
+</doc>

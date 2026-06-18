@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>FablePool.Tools.AllocationGate</RootNamespace>
+    <AssemblyName>AllocationGate</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Stable diagnostics IPC client for EventPipe sessions (targeting the 0.2.x line). -->
+    <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.*" />
+    <!-- TraceEvent for decoding the EventPipe stream (targeting the 3.1.x line). -->
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.*" />
+  </ItemGroup>
+
+</Project>
